@@ -7,8 +7,25 @@ import (
 	"strings"
 )
 
-func Part1(input *[]string) (int, error) {
+type IntSet map[int]struct{}
 
+func (is IntSet) Add(i int) {
+	is[i] = struct{}{}
+}
+
+func (is IntSet) AddAll(ints []int) {
+	for _, i := range ints {
+		is.Add(i)
+	}
+}
+
+func (is IntSet) Merge(otherSet IntSet) {
+	for k := range otherSet {
+		is.Add(k)
+	}
+}
+
+func Part1(input *[]string) (int, error) {
 	ranges, err := parseRanges(input)
 
 	if err != nil {
@@ -68,8 +85,57 @@ func Part1(input *[]string) (int, error) {
 }
 
 func Part2(input *[]string) (int, error) {
+	ranges, err := parseRanges(input)
 
-	return -1, fmt.Errorf("not implemented yet")
+	if err != nil {
+		return -1, err
+	}
+
+	invalidIds := make(IntSet)
+
+	for _, r := range ranges {
+		fmt.Printf("Range %d - %d\n", r.Min, r.Max)
+		minStr := strconv.Itoa(r.Min)
+		lenMin := len(minStr)
+		maxStr := strconv.Itoa(r.Max)
+		lenMax := len(maxStr)
+
+		idsForRange := make(IntSet)
+
+		if lenMin == lenMax {
+			idsForRange.AddAll(generateAllPatterns(lenMin, r.Min, r.Max))
+		} else {
+			diff := lenMax - lenMin
+
+			for i := 0; i <= diff; i++ {
+				fmt.Printf("for diff %d/%d\n", i, diff)
+				l := lenMin + i
+				partialMin := max(r.Min, int(math.Pow10(l-1)))
+				partialMax := min(r.Max, int(math.Pow10(l)-1))
+
+				idsForRange.AddAll(generateAllPatterns(l, partialMin, partialMax))
+			}
+
+		}
+
+		fmt.Printf("IDs for range %d - %d:\n", r.Min, r.Max)
+		for _, id := range idsForRange {
+			fmt.Printf("%d\n", id)
+		}
+
+		invalidIds.Merge(idsForRange)
+		fmt.Printf("\n")
+	}
+
+	sum := 0
+
+	fmt.Printf("Invalid ids\n")
+	for id := range invalidIds {
+		fmt.Printf("%d\n", id)
+		sum += id
+	}
+
+	return sum, nil
 }
 
 type Range struct {
@@ -141,4 +207,66 @@ func splitToPair(num int) (int, int, error) {
 	}
 
 	return aNum, bNum, nil
+}
+
+func getAllPossiblePatternSizesForLength(length int) []int {
+	if length < 2 {
+		return []int{}
+	}
+
+	if length == 2 {
+		return []int{1}
+	}
+
+	patternSizes := []int{1}
+
+	patternSize := 2
+
+	for patternSize < length {
+		if length%patternSize == 0 {
+			patternSizes = append(patternSizes, patternSize)
+		}
+		patternSize++
+	}
+
+	return patternSizes
+}
+
+func generateAllPatterns(length int, min int, max int) []int {
+	fmt.Printf("generateAllPatterns(length = %d, min = %d, max = %d)\n", length, min, max)
+	possiblePatternSizes := getAllPossiblePatternSizesForLength(length)
+	patterns := []int{}
+
+	fmt.Printf("possiblePatternSizes=%v\n", possiblePatternSizes)
+
+	for _, size := range possiblePatternSizes {
+		numOfPatternsInLength := length / size
+
+		patternMax := int(math.Pow10(size)) - 1
+		patternMin := int(math.Pow10(size - 1))
+		pattern := patternMin
+
+		for pattern <= patternMax {
+			idStr := strings.Repeat(strconv.Itoa(pattern), numOfPatternsInLength)
+			id, err := strconv.Atoi(idStr)
+
+			if err != nil {
+				fmt.Printf("this should not happen, invalid num from pattern %s\n", idStr)
+				continue
+			}
+
+			if id > max {
+				break
+			}
+
+			if id >= min {
+				patterns = append(patterns, id)
+			}
+
+			pattern++
+		}
+
+	}
+
+	return patterns
 }
