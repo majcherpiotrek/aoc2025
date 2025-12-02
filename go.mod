@@ -1,4 +1,4 @@
-module aoc2024
+module aoc2025
 
 go 1.22.0
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aoc2024/day_01"
+	"aoc2025/day_01"
 	"bufio"
 	"fmt"
 	"os"
