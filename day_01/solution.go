@@ -4,7 +4,6 @@ import (
 	"aoc2025/utils"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 func Part1(input *[]string) (int, error) {
@@ -39,21 +38,13 @@ func Part1(input *[]string) (int, error) {
 		cli := strconv.Itoa(rotationsNum)
 		res := strconv.Itoa(nextPosition)
 
-		fmt.Printf("|%s|%s|%s|\n", padCellValue(pos, 9), padCellValue(cli, 9), padCellValue(res, 9))
+		fmt.Printf("|%s|%s|%s|\n", utils.PadCellValue(pos, 9), utils.PadCellValue(cli, 9), utils.PadCellValue(res, 9))
 		fmt.Printf("|---------|---------|---------|\n")
 
 		current = nextPosition
 	}
 
 	return stopsAt0, nil
-}
-
-func padCellValue(str string, size int) string {
-	space := size - len(str)
-	leftPad := space / 2
-	rightPad := max(size-leftPad-len(str), 0)
-
-	return strings.Repeat(" ", leftPad) + str + strings.Repeat(" ", rightPad)
 }
 
 func calculateNextPosition(currentPosition int, rotations int) (int, int) {
@@ -111,7 +102,7 @@ func Part2(input *[]string) (int, error) {
 		res := strconv.Itoa(nextPosition)
 		cross := strconv.Itoa(cross0)
 
-		fmt.Printf("|%s|%s|%s|%s|\n", padCellValue(pos, 9), padCellValue(cli, 9), padCellValue(res, 9), padCellValue(cross, 9))
+		fmt.Printf("|%s|%s|%s|%s|\n", utils.PadCellValue(pos, 9), utils.PadCellValue(cli, 9), utils.PadCellValue(res, 9), utils.PadCellValue(cross, 9))
 		fmt.Printf("|---------|---------|---------|---------|\n")
 
 		current = nextPosition

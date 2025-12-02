@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc2025/day_01"
+	"aoc2025/day_02"
 	"bufio"
 	"fmt"
 	"os"
@@ -85,9 +86,9 @@ func runChallange(challengeId ChallengeId, puzzleInput *[]string) (int, error) {
 
 	case 2:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_02.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_02.Part2(puzzleInput)
 		}
 	case 3:
 		if challengeId.Part == 1 {
