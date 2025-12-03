@@ -23,8 +23,20 @@ func Part1(input *[]string) (int, error) {
 }
 
 func Part2(input *[]string) (int, error) {
+	banks, err := parseInput(input)
 
-	return -1, fmt.Errorf("not implementd")
+	if err != nil {
+		return -1, err
+	}
+
+	sum := 0
+
+	for _, bank := range banks {
+		b := findLargestNumberInBank(12, &bank)
+		sum += b
+	}
+
+	return sum, nil
 }
 
 func findLargestNumberInBank(numLength int, batteries *[]int) int {
