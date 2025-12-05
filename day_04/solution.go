@@ -8,9 +8,22 @@ type Coordinates struct {
 }
 
 type GridElement struct {
-	Value      rune
-	Coords     Coordinates
-	Neighbours []Coordinates
+	Value           rune
+	Coords          Coordinates
+	NumOfNeighbours int
+}
+
+func printGrid(grid *[][]GridElement) {
+	fmt.Printf("\n")
+	for _, row := range *grid {
+		rowToPrint := ""
+		for _, element := range row {
+			rowToPrint = fmt.Sprintf("%s%s", rowToPrint, string(element.Value))
+		}
+
+		fmt.Printf("%s\n", rowToPrint)
+	}
+	fmt.Printf("\n")
 }
 
 func parseInput(input *[]string) [][]GridElement {
@@ -30,7 +43,7 @@ func parseInput(input *[]string) [][]GridElement {
 					Row: i,
 					Col: k,
 				},
-				Neighbours: make([]Coordinates, 0, 8),
+				NumOfNeighbours: 0,
 			}
 
 			if gridElement.Value != '@' {
@@ -58,10 +71,7 @@ func parseInput(input *[]string) [][]GridElement {
 					}
 
 					if row2[k2] == '@' {
-						gridElement.Neighbours = append(gridElement.Neighbours, Coordinates{
-							Row: i2,
-							Col: k2,
-						})
+						gridElement.NumOfNeighbours += 1
 					}
 				}
 			}
@@ -82,7 +92,7 @@ func Part1(input *[]string) (int, error) {
 	for _, row := range grid {
 		for _, element := range row {
 			// fmt.Printf("len of neighbours for row %d col %d = %d\n", i, k, len(element.Neighbours))
-			if element.Value == '@' && len(element.Neighbours) < 4 {
+			if element.Value == '@' && element.NumOfNeighbours < 4 {
 				accessibleGridElements++
 			}
 		}
@@ -92,6 +102,67 @@ func Part1(input *[]string) (int, error) {
 }
 
 func Part2(input *[]string) (int, error) {
+	grid := parseInput(input)
 
-	return -1, fmt.Errorf("")
+	// printGrid(&grid)
+
+	step := 0
+
+	rollsRemoved := 0
+
+	for true {
+		step++
+
+		accessibleElements := make([]Coordinates, 0)
+		for _, row := range grid {
+			for _, element := range row {
+				if element.Value == '@' && element.NumOfNeighbours < 4 {
+					accessibleElements = append(accessibleElements, element.Coords)
+					// fmt.Printf("Accessible element in %d,%d - %s, neighbours - %d\n", element.Coords.Row, element.Coords.Col, string(element.Value), element.NumOfNeighbours)
+				} else {
+
+					// fmt.Printf("NOT accessible element in %d,%d - %s, neighbours - %d\n", element.Coords.Row, element.Coords.Col, string(element.Value), element.NumOfNeighbours)
+				}
+			}
+		}
+
+		if len(accessibleElements) == 0 {
+			break
+		}
+
+		// fmt.Printf("Found %d accessible elements in step %d\n", len(accessibleElements), step)
+
+		for _, coords := range accessibleElements {
+			grid[coords.Row][coords.Col].Value = 'x'
+			rollsRemoved++
+
+			// fmt.Printf("Removing at %d,%d\n", coords.Row, coords.Col)
+			for i := coords.Row - 1; i <= coords.Row+1; i++ {
+				if i < 0 || i >= len(grid) {
+					continue
+				}
+				for k := coords.Col - 1; k <= coords.Col+1; k++ {
+					if k < 0 || k >= len(grid[i]) {
+						continue
+					}
+
+					if i == coords.Row && k == coords.Col {
+						continue
+					}
+
+					// fmt.Printf("Checking neighbour %d,%d with value %s, neighbours %d\n", i, k, string(grid[i][k].Value), grid[i][k].NumOfNeighbours)
+
+					if grid[i][k].Value == '@' {
+						grid[i][k].NumOfNeighbours -= 1
+					}
+
+					// fmt.Printf("Processed neighbour %d,%d with value %s, neighbours %d\n\n", i, k, string(grid[i][k].Value), grid[i][k].NumOfNeighbours)
+				}
+			}
+		}
+
+		// printGrid(&grid)
+	}
+
+	return rollsRemoved, nil
 }
