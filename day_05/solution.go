@@ -73,22 +73,14 @@ func Part1(input *[]string) (int, error) {
 		return -1, fmt.Errorf("no fresh id ranges")
 	}
 
-	minId := freshIds[0].Min
-	maxId := freshIds[len(freshIds)-1].Max
-
 	fresh := 0
-
-	loops := 0
 
 	slices.Sort(ids)
 
-	for _, id := range ids {
-		if id < minId && id > maxId {
-			continue
-		}
+	mergedIds := mergeRanges(&freshIds)
 
-		for _, idsRange := range freshIds {
-			loops++
+	for _, id := range ids {
+		for _, idsRange := range mergedIds {
 			if id >= idsRange.Min && id <= idsRange.Max {
 				fresh++
 				break
@@ -100,6 +92,48 @@ func Part1(input *[]string) (int, error) {
 }
 
 func Part2(input *[]string) (int, error) {
+	freshIds, _, err := parseInput(input)
 
-	return -1, fmt.Errorf("")
+	if err != nil {
+		return -1, err
+	}
+
+	if len(freshIds) < 1 {
+		return -1, fmt.Errorf("no fresh id ranges")
+	}
+
+	mergedFreshIds := mergeRanges(&freshIds)
+	numOfAllFreshIds := 0
+
+	for _, mergedRange := range mergedFreshIds {
+		numOfIdsInRange := mergedRange.Max - mergedRange.Min + 1
+		numOfAllFreshIds += numOfIdsInRange
+	}
+
+	return numOfAllFreshIds, nil
+
+}
+
+func mergeRanges(ranges *[]IdsRange) []IdsRange {
+	merged := make([]IdsRange, 0)
+
+	for _, currentRange := range *ranges {
+		var lastMergedRange *IdsRange
+
+		if len(merged) > 0 {
+			lastMergedRange = &merged[len(merged)-1]
+		}
+
+		if lastMergedRange != nil {
+			if currentRange.Min > lastMergedRange.Max+1 {
+				merged = append(merged, currentRange)
+			} else if currentRange.Max > lastMergedRange.Max {
+				lastMergedRange.Max = currentRange.Max
+			}
+		} else {
+			merged = append(merged, currentRange)
+		}
+	}
+
+	return merged
 }
