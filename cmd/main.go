@@ -6,6 +6,13 @@ import (
 	"aoc2025/day_03"
 	"aoc2025/day_04"
 	"aoc2025/day_05"
+	"aoc2025/day_06"
+	"aoc2025/day_07"
+	"aoc2025/day_08"
+	"aoc2025/day_09"
+	"aoc2025/day_10"
+	"aoc2025/day_11"
+	"aoc2025/day_12"
 	"bufio"
 	"fmt"
 	"os"
@@ -113,45 +120,45 @@ func runChallange(challengeId ChallengeId, puzzleInput *[]string) (int, error) {
 		}
 	case 6:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_06.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_06.Part2(puzzleInput)
 		}
 	case 7:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_07.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_07.Part2(puzzleInput)
 		}
 	case 8:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_08.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_08.Part2(puzzleInput)
 		}
 	case 9:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_09.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_09.Part2(puzzleInput)
 		}
 	case 10:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_10.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_10.Part2(puzzleInput)
 		}
 	case 11:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_11.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_11.Part2(puzzleInput)
 		}
 	case 12:
 		if challengeId.Part == 1 {
-			return -1, fmt.Errorf("Not implemented")
+			return day_12.Part1(puzzleInput)
 		} else {
-			return -1, fmt.Errorf("Not implemented")
+			return day_12.Part2(puzzleInput)
 		}
 	default:
 		return -1, fmt.Errorf("Not implemented yet")
